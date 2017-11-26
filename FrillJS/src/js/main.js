@@ -28,7 +28,36 @@ $(document).ready(function () {
   $(".editorWrap").removeClass("hidden");
   wireupConnectEvents([[dc1, $(".half.left")], [dc2, $(".half.right")]]);
   wireupCursors();
+  wireupContent();
 });
+
+function wireupContent() {
+  q1.on('text-change', function (delta, oldDelta, source) {
+    //console.log("[shuang] q1 text-change");
+    //console.log("[shuang] delta:", delta);
+    //console.log("[shuang] source:", source);
+    dc1.contentChanged(delta, oldDelta, source);
+  });
+  q2.on('text-change', function (delta, oldDelta, source) {
+    //console.log("[shuang] q2 text-change");
+    //console.log("[shuang] delta:", delta);
+    //console.log("[shuang] source:", source);
+    dc2.contentChanged(delta, oldDelta, source);
+  });
+
+  document.addEventListener('dataclient-content', function (e) {
+    var q;
+    if (e.detail.sender.codeName == "dc1") q = q1;
+    else if (e.detail.sender.codeName == "dc2") q = q2;
+    q.setContents(e.detail.data);
+  });
+  document.addEventListener('dataclient-delta', function (e) {
+    var q;
+    if (e.detail.sender.codeName == "dc1") q = q1;
+    else if (e.detail.sender.codeName == "dc2") q = q2;
+    q.updateContents(e.detail.data);
+  });
+}
 
 function wireupCursors() {
   cm1 = q1.getModule("cursors");

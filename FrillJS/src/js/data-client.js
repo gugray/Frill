@@ -55,6 +55,22 @@ module.exports = function (codeName) {
     DataClient.socket.send(JSON.stringify(msgObj));
   }
 
+  // Local editor content changed (user input)
+  DataClient.contentChanged = function (delta, oldDelta, source) {
+    if (source != "user") return;
+
+    if (DataClient.me.range && DataClient.me.range.length) {
+      DataClient.me.range.index += DataClient.me.range.length;
+      DataClient.me.range.length = 0;
+      DataClient.selectionChanged();
+    }
+    var msgObj = {
+      msg: "delta",
+      data: delta
+    };
+    DataClient.socket.send(JSON.stringify(msgObj));
+  }
+
   // Server sent selection update for one peer
   function onMsgSelection(data) {
     console.log("[DataClient] Peer selection received.", data);
@@ -131,6 +147,26 @@ module.exports = function (codeName) {
     }));
   }
 
+  function onMsgContent(data) {
+    console.log('[DataClient] Received document content.');
+    document.dispatchEvent(new CustomEvent('dataclient-content', {
+      detail: {
+        sender: DataClient,
+        data: data
+      }
+    }));
+  }
+
+  function onMsgDelta(data) {
+    console.log('[DataClient] Received document delta.');
+    document.dispatchEvent(new CustomEvent('dataclient-delta', {
+      detail: {
+        sender: DataClient,
+        data: data
+      }
+    }));
+  }
+
   function initSocketHandlers() {
 
     // Send initial message to register the client, and
@@ -149,6 +185,8 @@ module.exports = function (codeName) {
       var msgObj = JSON.parse(message.data);
       if (msgObj.msg == "peers") onMsgPeers(msgObj.data);
       else if (msgObj.msg == "selection") onMsgSelection(msgObj.data);
+      else if (msgObj.msg == "content") onMsgContent(msgObj.data);
+      else if (msgObj.msg == "delta") onMsgDelta(msgObj.data);
     };
 
     DataClient.socket.onclose = function (event) {

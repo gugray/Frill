@@ -1,11 +1,20 @@
 "use strict";
 
+var ShareDB = require('sharedb');
 var WebSocket = require('ws');
 var uuid = require('uuid');
 var debug = require('debug')('FrillJS:ws-server');
 
 module.exports = function (server) {
 
+  ShareDB.types.register(require('rich-text').type);
+  const dbOpt = {
+    db: ShareDB.MemoryDB(),
+    //db: require('sharedb-mongo')(process.env.MONGODB_URI || 'mongodb://localhost/quill-sharedb-cursors?auto_reconnect=true'),
+    pubsub: ShareDB.MemoryPubSub()
+  };
+
+  const sharedb = new ShareDB(dbOpt);
   const wss = new WebSocket.Server({ noServer: true });
   const conns = [];
 
@@ -48,6 +57,7 @@ module.exports = function (server) {
           connections: []
         }
       };
+      if (ws.readyState != ws.OPEN) return;
       ws.send(JSON.stringify(msgObj));
       return;
     }
@@ -91,15 +101,63 @@ module.exports = function (server) {
     });
   }
 
+  function onMsgDelta(ws, data) {
+    debug('MSG <delta> received:\n%O', data);
+
+    // Feed into ShareDB. Connections will all receive their notifs.
+    ws.dbdoc.submitOp(data, function (err) {
+      if (err) debug('ShareDB submit failed:', err);
+    });
+  }
+
+  function onDocSubscribed(ws, err) {
+    if (err) {
+      debug('Failed to subscribe to document. Error: %s', err);
+      throw err;
+    }
+    if (!ws.dbdoc.type) {
+      debug('Document type missing; creating document now.');
+      ws.dbdoc.create([{
+        insert: '\n'
+      }], 'rich-text');
+    }
+    // Send doc's content to client
+    var msgObj = {
+      msg: "content",
+      data: ws.dbdoc.data
+    };
+    if (ws.readyState != ws.OPEN) return;
+    ws.send(JSON.stringify(msgObj));
+    debug('Sent document content to client.');
+    // Subscribe to deltas
+    ws.dbdoc.on('op', function (op, source) {
+      if (source) return; // So we don't send delta straight back to the submitter.
+
+      var msgObj = {
+        msg: "delta",
+        data: op
+      };
+      if (ws.readyState != ws.OPEN) return;
+      ws.send(JSON.stringify(msgObj));
+    });
+    debug('Subscribed to ShareDB doc deltas.');
+  }
+
   function onMessage(ws, message) {
     var msgObj = JSON.parse(message);
     if (msgObj.msg == "details") onMsgDetails(ws, msgObj.data);
     if (msgObj.msg == "selection") onMsgSelection(ws, msgObj.data);
+    if (msgObj.msg == "delta") onMsgDelta(ws, msgObj.data);
   }
 
   function onClose(ws, code, reason) {
     debug('Client connection closed (%s).\nCode: %s, Reason: %s', ws.id, code, reason);
 
+    // Unsubscribe document
+    if (ws.dbdoc) {
+      ws.dbdoc.destroy();
+      delete ws.dbdoc;
+    }
     // Forget
     var ix = conns.findIndex((x) => x.ws.id == ws.id);
     // Should never happen
@@ -125,9 +183,15 @@ module.exports = function (server) {
   }
 
   wss.on('connection', function (ws, req) {
+    // Assign new ID
     ws.id = uuid();
     ws.isAlive = true;
     debug('New connection. Assigned ID: %s.', ws.id);
+    // Create a ShareDB client for this connection
+    ws.dbconn = sharedb.connect();
+    ws.dbdoc = ws.dbconn.get('frilldocs', 'docxyz');
+    debug('ShareDB connection created and document retrieved.');
+    ws.dbdoc.subscribe((err) => onDocSubscribed(ws, err));
 
     // Socket's event handlers
     ws.on('message', (data) => onMessage(ws, data));
