@@ -9,8 +9,8 @@ module.exports = function (server) {
 
   ShareDB.types.register(require('rich-text').type);
   const dbOpt = {
-    db: ShareDB.MemoryDB(),
-    //db: require('sharedb-mongo')(process.env.MONGODB_URI || 'mongodb://localhost/quill-sharedb-cursors?auto_reconnect=true'),
+    //db: ShareDB.MemoryDB(),
+    db: require('sharedb-mongo')(process.env.MONGODB_URI || 'mongodb://localhost/frilldb?auto_reconnect=true'),
     pubsub: ShareDB.MemoryPubSub()
   };
 
