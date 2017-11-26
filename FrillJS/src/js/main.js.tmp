@@ -1,0 +1,48 @@
+﻿"use strict";
+
+//var $ = require('jquery');
+//var Quill = require("quill");
+
+$(document).ready(function () {
+  Quill.register('modules/cursors', QuillCursors);
+
+  var q1 = new Quill('#editor1', {
+    theme: 'snow',
+    modules: {
+      cursors: true
+    }
+  });
+  var q2 = new Quill('#editor2', {
+    theme: 'snow',
+    modules: {
+      cursors: true
+    }
+  });
+
+  var c1 = q1.getModule('cursors');
+  var c2 = q2.getModule('cursors');
+
+  function textChangeHandler(q) {
+    return function (delta, oldDelta, source) {
+      if (source == 'user')
+        q.updateContents(delta);
+    };
+  }
+
+  q1.on('text-change', textChangeHandler(q2));
+  q2.on('text-change', textChangeHandler(q1));
+
+  q1.on('selection-change', function (range, oldRange, source) {
+    if (range)
+      c2.setCursor('1', range, null, 'red');
+  });
+
+  q2.on('selection-change', function (range, oldRange, source) {
+    if (range)
+      c1.setCursor('2', range, null, 'blue');
+  });
+
+  q1.focus();
+});
+
+

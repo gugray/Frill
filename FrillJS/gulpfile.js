@@ -10,6 +10,8 @@ var plumber = require('gulp-plumber');
 var less = require('gulp-less');
 var path = require('path');
 var concat = require('gulp-concat');
+var sourcemaps = require('gulp-sourcemaps');
+var babel = require('gulp-babel');
 
 gulp.task('scripts', function () {
   var bundle = browserify({
@@ -18,8 +20,11 @@ gulp.task('scripts', function () {
   });
   return bundle.bundle()
     .pipe(source('app.js'))
-    //.pipe(buffer())
-    //.pipe(uglify())
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(babel({ presets: ['es2015'] }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./public/'));
 });
 
@@ -44,4 +49,5 @@ gulp.task('default', ['scripts', 'styles'], function () { });
 
 gulp.task('watch', function () {
   gulp.watch(['./src/less/*.less'], ['styles']);
+  gulp.watch(['./src/js/*.js'], ['scripts']);
 });

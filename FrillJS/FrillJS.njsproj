@@ -7,6 +7,7 @@
     <LaunchUrl>http://localhost:3030/</LaunchUrl>
     <Environment>PORT=3030
 NODE_ENV=development
+DEBUG=FrillJS:ws-server
 </Environment>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -35,14 +36,20 @@ NODE_ENV=development
     <Compile Include="gulpfile.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="logic\ws-server.js" />
     <Compile Include="public\app.js" />
     <Compile Include="routes.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="server.js" />
+    <Compile Include="src\js\data-client.js" />
     <Compile Include="src\js\main.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\js\main.js.tmp">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\js\utils.js" />
     <Content Include="index.ejs">
       <SubType>Code</SubType>
     </Content>
@@ -55,6 +62,8 @@ NODE_ENV=development
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="logic\" />
+    <Folder Include="public\lib\" />
     <Folder Include="src\" />
     <Folder Include="public\" />
     <Folder Include="src\js\" />

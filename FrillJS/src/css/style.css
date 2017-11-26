@@ -4,7 +4,7 @@
   border: 0;
   outline: none;
 }
-.mine {
+div.struct {
   position: relative;
   float: left;
   box-sizing: border-box;
@@ -15,7 +15,7 @@
 html {
   height: 100%;
   background-color: #fafafa;
-  font-size: 13pt;
+  font-size: 16pt;
   font-family: "Muli", sans-serif;
   border: 0;
   margin: 0;
@@ -29,24 +29,80 @@ body {
   background-color: #fafafa;
   color: #444444;
 }
+input {
+  display: block;
+  box-sizing: border-box;
+  position: relative;
+  float: left;
+}
+i.fa {
+  cursor: default;
+}
+input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+input {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  border-radius: 0;
+}
 #halfer {
-  margin-top: 2rem;
-  height: 20rem;
+  padding: 2rem 0;
+  height: 100%;
   overflow-y: hidden;
 }
-.editor {
-  height: 17rem;
-  font-size: 130%;
-}
-.editorWrap {
+#halfer .half {
   width: 45%;
   overflow-y: hidden;
 }
-.editorWrap.left {
-  margin-left: 4%;
+#halfer .half.left {
+  margin-left: 3%;
   margin-right: 1%;
 }
-.editorWrap.right {
+#halfer .half.right {
   margin-left: 1%;
-  margin-right: 4%;
+  margin-right: 3%;
+}
+#halfer .editorWrap.hidden {
+  visibility: hidden;
+}
+#halfer .editor {
+  height: 17rem;
+  font-size: 16pt;
+  background-color: white;
+}
+.box {
+  border: 1px solid #cccccc;
+  padding: 12px 9px;
+}
+.connect {
+  margin-bottom: 0.5rem;
+}
+.connect input {
+  height: 2rem;
+}
+.connect input[type="button"] {
+  border: none;
+  width: 20%;
+  float: right;
+  color: white;
+}
+.connect input[type="button"].red {
+  background-color: red;
+}
+.connect input[type="button"].blue {
+  background-color: blue;
+}
+.connect input[type="button"].disabled {
+  background-color: grey;
+}
+.connect input[type="text"] {
+  background-color: white;
+  font-size: 16pt;
+  font-family: "Muli", sans-serif;
+  border: none;
+  width: 80%;
+  padding: 0 8px 0 8px;
 }

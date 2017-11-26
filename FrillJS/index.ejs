@@ -11,15 +11,45 @@
   <link href="/app.min.css" rel="stylesheet">
 </head>
 <body>
+  <div id="halfer" class="struct">
+    <div class="half left struct">
+      <div class="box connect struct">
+        <input type="text" value="ada" />
+        <input type="button" value="Connect" class="red" />
+      </div>
+      <div class="editorWrap hidden struct">
+        <div id="editorL" class="editor">
+          <p>Hello World!</p>
+          <p>Some initial <strong>bold</strong> text</p>
+          <p><br></p>
+        </div>
+      </div>
+    </div>
+    <div class="half right struct">
+      <div class="box connect struct">
+        <input type="text" value="hedy" />
+        <input type="button"value="Connect" class="blue" />
+      </div>
+      <div class="editorWrap hidden struct">
+        <div id="editorR" class="editor">
+          <p>Hello World!</p>
+          <p>Some initial <strong>bold</strong> text</p>
+          <p><br></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--
   <div id="halfer" class="mine">
-    <div class="editorWrap mine left">
+    <div class="half mine left">
       <div id="editor1" class="editor">
         <p>Hello World!</p>
         <p>Some initial <strong>bold</strong> text</p>
         <p><br></p>
       </div>
     </div>
-    <div class="editorWrap mine right">
+    <div class="half mine right">
       <div id="editor2" class="editor">
         <p>Hello World!</p>
         <p>Some initial <strong>bold</strong> text</p>
@@ -27,8 +57,11 @@
       </div>
     </div>
   </div>
+  -->
 
-  <script src="/quill-cursors.min.js"></script>
+  <script src="/lib/jquery.min.js"></script>
+  <script src="/lib/quill.min.js"></script>
+  <script src="/lib/quill-cursors.min.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
