@@ -89,7 +89,6 @@ module.exports = function (codeName) {
   // Server sent peer list
   function onMsgPeers(data) {
     var source = {};
-    var removedPeers = [];
     var forceSendDetails = false;
     var reportNewPeers = true;
 
@@ -107,7 +106,6 @@ module.exports = function (codeName) {
       var receivedPeer = data.peers.find((p) => { return p.id == DataClient.peers[i].id; });
 
       if (!receivedPeer) {
-        removedPeers.push(DataClient.peers[i]);
         console.log('[DataClient] Peer disconnected:', DataClient.peers[i]);
 
         // If the source connection was removed set it
@@ -139,11 +137,15 @@ module.exports = function (codeName) {
     DataClient.peers = data.peers;
 
     // Tell consumer
+    var peerList = [];
+    DataClient.peers.forEach((p) => {
+      peerList.push({ id: p.id, name: p.name, color: p.color });
+    });
     document.dispatchEvent(new CustomEvent('dataclient-peers', {
       detail: {
         sender: DataClient,
         source: source,
-        removedPeers: removedPeers
+        peers: peerList
       }
     }));
   }

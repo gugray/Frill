@@ -48,10 +48,35 @@ input {
   -webkit-border-radius: 0px;
   border-radius: 0;
 }
+#header {
+  width: 98%;
+  margin: 0 auto;
+  float: none;
+  padding: 2rem 2%;
+  z-index: 1;
+  height: 2rem;
+  overflow: hidden;
+}
+#header h1 {
+  font-size: 1.7rem;
+  width: auto;
+  position: relative;
+  float: left;
+  height: 2rem;
+  z-index: 2;
+  background-color: #fafafa;
+  padding-right: 0.3rem;
+}
+#header div {
+  position: relative;
+  width: 100%;
+  height: 1.5rem;
+  border-bottom: 3pt solid #444444;
+}
 #halfer {
-  padding: 2rem 0;
+  padding: 1rem 0 0 0;
   height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 #halfer .half {
   width: 45%;
@@ -72,6 +97,42 @@ input {
   height: 17rem;
   font-size: 16pt;
   background-color: white;
+}
+#halfer.shuang .normal {
+  display: none;
+}
+#halfer.normal .shuang {
+  display: none;
+}
+#halfer.normal .right h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.85rem;
+}
+#halfer.normal .right p {
+  color: white;
+  width: 13rem;
+  text-align: center;
+  margin-bottom: 0.4rem;
+  padding: 0.1rem 0;
+  border-radius: 0.3rem;
+}
+#halfer.normal .right p.red {
+  background-color: red;
+}
+#halfer.normal .right p.blue {
+  background-color: blue;
+}
+#halfer.normal .right p.violet {
+  background-color: blueviolet;
+}
+#halfer.normal .right p.green {
+  background-color: green;
+}
+#halfer.normal .right p.orchid {
+  background-color: darkorchid;
+}
+#halfer.normal .right p.orange {
+  background-color: darkorange;
 }
 .box {
   border: 1px solid #cccccc;

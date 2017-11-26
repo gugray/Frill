@@ -197,10 +197,19 @@ function wireupConnectEvents(clients) {
     elmTxt.prop("readonly", false);
   });
   document.addEventListener("dataclient-peers", function (e) {
-    if (e.detail.sender.codeName == "dc1")
-      updateCursors(e.detail.source, cm1, dc1);
-    else if (e.detail.sender.codeName == "dc2")
-      updateCursors(e.detail.source, cm2, dc2);
+    var dc, cm;
+    if (e.detail.sender.codeName == "dc1") { dc = dc1; cm = cm1; }
+    else { dc = dc2; cm = cm2; }
+    updateCursors(e.detail.source, cm, dc);
+    var html = "";
+    console.log(e.detail.peers);
+    e.detail.peers.forEach((p) => {
+      html += "<p class='" + p.color + "'>";
+      html += utils.esc(p.name);
+      if (p.id == dc.me.id) html += " (me)";
+      html += "</p>";
+    });
+    $("#peerlist").html(html);
   });
 
 }
