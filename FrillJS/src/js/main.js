@@ -1,5 +1,7 @@
 ﻿"use strict";
 
+const colors = ["red", "blue", "violet", "green", "orchid", "orange"];
+
 var utils = require('./utils');
 var dc1 = require('./data-client')();
 dc1.codeName = "dc1";
@@ -10,6 +12,7 @@ var cm1, cm2;   // Cursors modules
 
 var quillParams = {
   theme: 'snow',
+  placeholder: "Let's write a story together.",
   modules: {
     cursors: {
       autoRegisterListener: false
@@ -26,10 +29,32 @@ $(document).ready(function () {
   q1 = new Quill('#editorL', quillParams);
   q2 = new Quill('#editorR', quillParams);
   $(".editorWrap").removeClass("hidden");
+  wireupColors();
   wireupConnectEvents([[dc1, $(".half.left")], [dc2, $(".half.right")]]);
   wireupCursors();
   wireupContent();
 });
+
+function wireupColors() {
+  function updateColor(elmTxt, elmBtn, dc) {
+    colors.forEach(x => elmBtn.removeClass(x));
+    var ix = Math.abs(utils.hash(elmTxt.val())) % 6;
+    elmBtn.addClass(colors[ix]);
+    dc.color = colors[ix];
+  }
+  var elmTxtL = $(".half.left .connect input[type='text']");
+  var elmBtnL = $(".half.left .connect input[type='button']");
+  updateColor(elmTxtL, elmBtnL, dc1);
+  elmTxtL.on("input", function () {
+    updateColor(elmTxtL, elmBtnL, dc1);
+  });
+  var elmTxtR = $(".half.right .connect input[type='text']");
+  var elmBtnR = $(".half.right .connect input[type='button']");
+  updateColor(elmTxtR, elmBtnR, dc2);
+  elmTxtR.on("input", function () {
+    updateColor(elmTxtR, elmBtnR, dc2);
+  });
+}
 
 function wireupContent() {
   q1.on('text-change', function (delta, oldDelta, source) {
@@ -126,15 +151,17 @@ function wireupConnectEvents(clients) {
     var dc = x[0];
     var elm = x[1];
     var elmButton = elm.find(".connect input[type='button']");
+    var elmTxt = elm.find(".connect input[type='text']");
     elmButton.click(function () {
       if ($(this).hasClass("disabled")) return;
       if (dc.connected) dc.disconnect();
       else {
-        var name = elm.find(".connect input[type='text']").val();
+        var name = elmTxt.val();
         var color = dc.codeName == "dc1" ? "red" : "blue";
-        dc.connect(name, color);
+        dc.connect(name);
       }
       $(this).addClass("disabled");
+      elmTxt.prop("readonly", true);
     });
   });
   document.addEventListener("dataclient-connected", function (e, f) {
@@ -154,16 +181,20 @@ function wireupConnectEvents(clients) {
   });
   document.addEventListener("dataclient-disconnected", function (e) {
     var elmBtn;
+    var elmTxt;
     if (e.detail.sender.codeName == "dc1") {
       elmBtn = $(".half.left .connect input[type='button']");
+      elmTxt = $(".half.left .connect input[type='text']");
       q1.disable();
     }
     else {
       elmBtn = $(".half.right .connect input[type='button']");
+      elmTxt = $(".half.right .connect input[type='text']");
       q2.disable();
     }
     elmBtn.attr("value", "Connect");
     elmBtn.removeClass("disabled");
+    elmTxt.prop("readonly", false);
   });
   document.addEventListener("dataclient-peers", function (e) {
     if (e.detail.sender.codeName == "dc1")

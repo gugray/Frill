@@ -43,9 +43,16 @@ input {
 .connect {
   margin-bottom: 0.5rem;
   input { height: 2rem; }
-  input[type="button"] { border: none; width: 20%; float: right; color: white; }
-  input[type="button"].red { background-color: red; }
-  input[type="button"].blue { background-color: blue; }
+  input[type="button"] { 
+    border: none; width: 20%; float: right; color: white; 
+    font-size: 0.8rem; text-transform: uppercase;
+  }
+  input[type="button"].red { background-color: red; &:hover { background-color: lighten(red, 20%); } }
+  input[type="button"].blue { background-color: blue; &:hover { background-color: lighten(blue, 20%); } }
+  input[type="button"].violet { background-color: blueviolet; &:hover { background-color: lighten(blueviolet, 20%); } }
+  input[type="button"].green { background-color: green; &:hover { background-color: lighten(green, 20%); } }
+  input[type="button"].orchid { background-color: darkorchid; &:hover { background-color: lighten(darkorchid, 20%); } }
+  input[type="button"].orange { background-color: darkorange; &:hover { background-color: lighten(darkorange, 20%); } }
   input[type="button"].disabled { background-color: grey; }
   input[type="text"] { 
     background-color: white; font-size: @fntBaseSize; font-family: @fntBaseFamily;

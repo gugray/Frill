@@ -88,12 +88,44 @@ input {
   width: 20%;
   float: right;
   color: white;
+  font-size: 0.8rem;
+  text-transform: uppercase;
 }
 .connect input[type="button"].red {
   background-color: red;
 }
+.connect input[type="button"].red:hover {
+  background-color: #ff6666;
+}
 .connect input[type="button"].blue {
   background-color: blue;
+}
+.connect input[type="button"].blue:hover {
+  background-color: #6666ff;
+}
+.connect input[type="button"].violet {
+  background-color: blueviolet;
+}
+.connect input[type="button"].violet:hover {
+  background-color: #bc85ee;
+}
+.connect input[type="button"].green {
+  background-color: green;
+}
+.connect input[type="button"].green:hover {
+  background-color: #00e600;
+}
+.connect input[type="button"].orchid {
+  background-color: darkorchid;
+}
+.connect input[type="button"].orchid:hover {
+  background-color: #c283e1;
+}
+.connect input[type="button"].orange {
+  background-color: darkorange;
+}
+.connect input[type="button"].orange:hover {
+  background-color: #ffba66;
 }
 .connect input[type="button"].disabled {
   background-color: grey;

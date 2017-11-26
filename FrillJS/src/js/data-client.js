@@ -14,14 +14,14 @@ module.exports = function (codeName) {
   // Consumer should set this to unique names in page if there are multiple clients
   DataClient.codeName = "dc";
 
+  DataClient.color = "red";
   DataClient.me = null;
   DataClient.connected = false;
-
-  // Peers that are around
+  DataClient.version = null;
   DataClient.peers = [];
 
-  DataClient.connect = function (name, color) {
-    DataClient.me = new Peer(name, color);
+  DataClient.connect = function (name) {
+    DataClient.me = new Peer(name, DataClient.color);
     // Create browserchannel socket
     var wsAddr = ((location.protocol === 'https:') ? 'wss' : 'ws') + '://' + window.location.host + '/data';
     //DataClient.socket = new ReconnectingWebSocket(wsAddr);
@@ -47,6 +47,7 @@ module.exports = function (codeName) {
 
   // Store and send new selection
   DataClient.selectionChanged = function (range) {
+    if (!DataClient.me) return;
     DataClient.me.range = range;
     var msgObj = {
       msg: "selection",
@@ -149,20 +150,22 @@ module.exports = function (codeName) {
 
   function onMsgContent(data) {
     console.log('[DataClient] Received document content.');
+    DataClient.version = data.version;
     document.dispatchEvent(new CustomEvent('dataclient-content', {
       detail: {
         sender: DataClient,
-        data: data
+        data: data.content
       }
     }));
   }
 
   function onMsgDelta(data) {
     console.log('[DataClient] Received document delta.');
+    DataClient.version = data.version;
     document.dispatchEvent(new CustomEvent('dataclient-delta', {
       detail: {
         sender: DataClient,
-        data: data
+        data: data.delta
       }
     }));
   }

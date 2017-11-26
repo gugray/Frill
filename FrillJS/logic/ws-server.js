@@ -124,7 +124,10 @@ module.exports = function (server) {
     // Send doc's content to client
     var msgObj = {
       msg: "content",
-      data: ws.dbdoc.data
+      data: {
+        content: ws.dbdoc.data,
+        version: ws.dbdoc.version
+      }
     };
     if (ws.readyState != ws.OPEN) return;
     ws.send(JSON.stringify(msgObj));
@@ -135,7 +138,10 @@ module.exports = function (server) {
 
       var msgObj = {
         msg: "delta",
-        data: op
+        data: {
+          delta: op,
+          version: ws.dbdoc.version
+        }
       };
       if (ws.readyState != ws.OPEN) return;
       ws.send(JSON.stringify(msgObj));
